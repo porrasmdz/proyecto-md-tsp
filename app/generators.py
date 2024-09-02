@@ -15,7 +15,9 @@ def alphabetic_generator(alphabet=string.ascii_uppercase):
         else:
             s = [alphabet[0]] * (l+1)
 
-def generate_random_square_matrix(size=10):    
-    distance_matrix = np.random.randint(0, constants.RANDOM_CAP, size=(size, size))
+def generate_random_square_matrix(size=10, seed=None):    
+    if seed is not None:
+        np.random.seed(seed)
+    distance_matrix = np.random.randint(0, constants.MAX_EDGES_VALUES, size=(size, size))
     np.fill_diagonal(distance_matrix, 0)
     return distance_matrix

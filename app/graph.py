@@ -3,7 +3,10 @@ import constants
 import numpy as np
 import pandas as pd
 from numpy import ndarray
-from generators import alphabetic_generator
+import networkx as nx
+import matplotlib.pyplot as plt
+
+from generators import alphabetic_generator, generate_random_square_matrix
 '''
 Utilizando matriz de distancia pq todos los algoritmos
 son más fáciles de implementar con matriz de distancia
@@ -21,41 +24,56 @@ E 1  2  7  1  0
 No es necesario que sea simétrica pero es para visualizarlo fácil
 Si debe ser cuadrada 
 '''
-def validate_distance_matrix(matrix:ndarray=np.array([])):
-    width= matrix.shape[0]
-    height= matrix.shape[1]
-    if width != height:
-        raise ValueError(f"La matriz debe ser cuadrada # Filas == # Col pero se obtuvo matriz de {matrix.shape}", )
-
-def validate_headers(matrix:ndarray=np.array([]), headers:ndarray=np.array([])):
-    width= matrix.shape[1]
-    if width != len(headers):
-        raise ValueError(f"Las cabeceras no ocupan todas las columnas. Espearadas {width} recibidas {len(headers)}", )
 
 class Graph:
-    def __init__(self, distance_matrix: ndarray= np.array([]), headers = None):
-        if headers is None:
-            
-            alph_gen = alphabetic_generator()
-            
-            self.headers = [next(alph_gen) for _ in range(len(distance_matrix.transpose()))]
+    def __init__(self, size=10, cities = None, random_values=True):
+        matrix_size = size
+        if random_values:
+            distance_matrix = generate_random_square_matrix(size=matrix_size)
         else:
-            validate_headers(distance_matrix, headers)
-            self.headers = headers
+            distance_matrix = generate_random_square_matrix(size=matrix_size, seed=constants.OPTIONAL_SEED)
+        if cities is None:
+            alph_gen = alphabetic_generator()
+            self.cities = [next(alph_gen) for _ in range(len(distance_matrix.transpose()))]
+        else:
+            self.cities = list(set(cities))
+            matrix_size = len(cities)
+            if random_values:
+                distance_matrix = generate_random_square_matrix(size=matrix_size)
+            else:
+                distance_matrix = generate_random_square_matrix(size=matrix_size, seed=constants.OPTIONAL_SEED)
         
-        validate_distance_matrix(distance_matrix)
         self.distance_matrix  = pd.DataFrame(distance_matrix, 
-                                             columns=self.headers)
+                                             columns=self.cities)
         
         alph_gen = alphabetic_generator()
         for idx in range(len(self.distance_matrix)):
-            if headers is None:
+            if cities is None:
                 self.distance_matrix = self.distance_matrix.rename(index={idx: next(alph_gen)})
             else:
-                self.distance_matrix = self.distance_matrix.rename(index={idx: headers[idx]})
+                self.distance_matrix = self.distance_matrix.rename(index={idx: cities[idx]})
     
     def get_distance_matrix(self):
         return self.distance_matrix.to_numpy()
+    
+    def show_graph(self):
+        print("Una vez termine de trabajar con la imagen del grafo. Ciérrela para continuar.")
+        df = self.distance_matrix
+        G = nx.Graph()
+        for i in df.index:
+            for j in df.columns:
+                weight = df.loc[i, j]
+                if i != j and weight > constants.MIN_EDGES_VALUES:  # Evitar los lazos
+                    G.add_edge(i, j, weight=weight)
+        pos = nx.spring_layout(G)  # Layout para la disposición de los nodos
+        weights = nx.get_edge_attributes(G, 'weight')
+
+        nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=600, font_size=10, font_weight='bold', edge_color='gray')
+        nx.draw_networkx_edge_labels(G, pos, edge_labels=weights)
+
+        plt.show()
+
+
     
     def __str__(self):
         graph = self.distance_matrix

@@ -2,3 +2,5 @@ numpy
 python_tsp
 pandas
 stopit
+networkx[default]
+matplotlib

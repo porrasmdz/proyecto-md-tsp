@@ -3,7 +3,7 @@ from stopit import ThreadingTimeout
 
 
 def print_travelling_route(algorithm: TSPSolver, open_cycle = False):
-    ciudades = algorithm.graph.headers
+    ciudades = algorithm.graph.cities
     graph = algorithm.graph
     try:
         (permutations, distance) = algorithm.timedFindRoute()

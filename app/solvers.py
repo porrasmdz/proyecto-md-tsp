@@ -86,15 +86,3 @@ class BnBSolver(TSPSolver):
         return (permutation, distance)
     
 #ALGORITMOS CON HEURISTICA (NO SIEMPRE EXACTOS NI SIEMPRE OPTIMOS)
-    
-class BnBSolver(TSPSolver):    
-    def __init__(self, graph: Graph, open_cycle=False):
-        super().__init__(graph, open_cycle)
-        self.name = "Algoritmo de Ramificación y Acotamiento"
-        self.algorithmic_complexity = "O(n!)"
-        size = graph.distance_matrix.shape[0]
-        self.iteration_err_msg = f"El algoritmo necesitaria iterar: {size}! = {'%.2E' % Decimal(math.factorial(size))} veces"
-    def findRoute(self):
-        permutation, distance = solve_tsp_branch_and_bound(self.graph.get_distance_matrix())
-        return (permutation, distance)
-    
