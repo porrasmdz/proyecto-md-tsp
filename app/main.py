@@ -1,13 +1,13 @@
 import numpy as np
-from strategies import NearestNeighborSolver, TSPSolver, BruteForceSolver
+from solvers import NearestNeighborSolver, TSPSolver, BruteForceSolver
 from graph import Graph
-matrix = np.array([[0, 11, 2],
+
+distance_matrix = np.array([[0, 11, 2],
                [1, 0, 3],
                [3,3,0]])
+headers = np.array(["GYE", "UIO", "CNC"])
+ciudades=headers
 
-ciudadesA=np.array(["GYE", "UIO", "CNC",])
-ciudadesB=np.array(["GYE", "UIO", "CNC"])
-graph = Graph(matrix, col_headers=ciudadesA, row_headers=ciudadesB)
 
 def print_travelling_route(algorithm: TSPSolver, open_cycle = False):
     (permutations, distance) = algorithm.findRoute()
@@ -19,15 +19,24 @@ def print_travelling_route(algorithm: TSPSolver, open_cycle = False):
         perm = permutations[perm_idx]
         if perm_idx < len(permutations) -1:
             next_perm = permutations[perm_idx + 1]
-            print(f"Paso {perm_idx+1}:", ciudadesA[perm],"->" ,ciudadesA[next_perm])
+            ciudad_orig =ciudades[perm]
+            ciudad_destino = ciudades[next_perm]
+            print(f"Paso {perm_idx+1}:",ciudad_orig ,"->" ,ciudad_destino, f" | Distancia {graph.distance_matrix[ciudad_destino][ciudad_orig]}")
         elif perm_idx == len(permutations) - 1 and not open_cycle:
-            print(f"Paso {perm_idx+1}:", ciudadesA[perm],"->" ,ciudadesA[first_perm])
+            ciudad_orig =ciudades[perm]
+            ciudad_destino = ciudades[first_perm]
+            print(f"Paso {perm_idx+1}:", ciudades[perm],"->" ,ciudades[first_perm],  f" | Distancia {graph.distance_matrix[ciudad_destino][ciudad_orig]}")
 
 if __name__ == "__main__":
     is_open_route = False
-    brute_force_results = BruteForceSolver(graph=graph,open_cycle=is_open_route)
-    nearest_neighbor = NearestNeighborSolver(graph=graph,open_cycle=is_open_route)
-    print("################################")
-    print_travelling_route(algorithm=brute_force_results, open_cycle=is_open_route)
-    print("################################")
-    print_travelling_route(algorithm=nearest_neighbor, open_cycle=is_open_route)
+    try:
+        graph = Graph(distance_matrix, headers=ciudades)
+        brute_force_results = BruteForceSolver(graph=graph,open_cycle=is_open_route)
+        nearest_neighbor = NearestNeighborSolver(graph=graph,open_cycle=is_open_route)
+        print("################################")
+        print_travelling_route(algorithm=brute_force_results, open_cycle=is_open_route)
+        print("################################")
+        print_travelling_route(algorithm=nearest_neighbor, open_cycle=is_open_route)
+    except Exception as e:
+        print("Se encontró un error, cancelando operación")
+        print("Error", str(e))

@@ -17,23 +17,37 @@ C 3  9  0  7  3
 D 5  4  3  0  1
 E 1  2  7  1  0
 
-No es necesario que sea simétrica pero es para visualizarlo fácil 
+No es necesario que sea simétrica pero es para visualizarlo fácil
+Si debe ser cuadrada 
 '''
+def validate_distance_matrix(matrix:ndarray=np.array([])):
+    width= matrix.shape[0]
+    height= matrix.shape[1]
+    if width != height:
+        raise ValueError(f"La matriz debe ser cuadrada # Filas == # Col pero se obtuvo matriz de {matrix.shape}", )
+
+def validate_headers(matrix:ndarray=np.array([]), headers:ndarray=np.array([])):
+    width= matrix.shape[1]
+    if width != len(headers):
+        raise ValueError(f"Las cabeceras no ocupan todas las columnas. Espearadas {width} recibidas {len(headers)}", )
 
 class Graph:
-    def __init__(self, distance_matrix: ndarray= np.array([]), col_headers = None, row_headers = None):
-        self.col_headers = col_headers
-        if col_headers is None:
-            self.col_headers = [string.ascii_uppercase[idx] for idx in range(len(distance_matrix.transpose()))]
+    def __init__(self, distance_matrix: ndarray= np.array([]), headers = None):
+        if headers is None:
+            self.headers = [string.ascii_uppercase[idx] for idx in range(len(distance_matrix.transpose()))]
+        else:
+            validate_headers(distance_matrix, headers)
+            self.headers = headers
         
+        validate_distance_matrix(distance_matrix)
         self.distance_matrix  = pd.DataFrame(distance_matrix, 
-                                             columns=self.col_headers)
-        self.row_headers = row_headers
+                                             columns=self.headers)
+        
         for idx in range(len(self.distance_matrix)):
-            if row_headers is None:
+            if headers is None:
                 self.distance_matrix = self.distance_matrix.rename(index={idx: string.ascii_uppercase[idx]})
             else:
-                self.distance_matrix = self.distance_matrix.rename(index={idx: row_headers[idx]})
+                self.distance_matrix = self.distance_matrix.rename(index={idx: headers[idx]})
     
     def get_distance_matrix(self):
         return self.distance_matrix.to_numpy()
