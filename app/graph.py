@@ -3,6 +3,7 @@ import string
 import numpy as np
 import pandas as pd
 from numpy import ndarray
+from generators import alphabetic_generator
 '''
 Utilizando matriz de distancia pq todos los algoritmos
 son más fáciles de implementar con matriz de distancia
@@ -34,7 +35,10 @@ def validate_headers(matrix:ndarray=np.array([]), headers:ndarray=np.array([])):
 class Graph:
     def __init__(self, distance_matrix: ndarray= np.array([]), headers = None):
         if headers is None:
-            self.headers = [string.ascii_uppercase[idx] for idx in range(len(distance_matrix.transpose()))]
+            
+            alph_gen = alphabetic_generator()
+            
+            self.headers = [next(alph_gen) for _ in range(len(distance_matrix.transpose()))]
         else:
             validate_headers(distance_matrix, headers)
             self.headers = headers
@@ -43,9 +47,10 @@ class Graph:
         self.distance_matrix  = pd.DataFrame(distance_matrix, 
                                              columns=self.headers)
         
+        alph_gen = alphabetic_generator()
         for idx in range(len(self.distance_matrix)):
             if headers is None:
-                self.distance_matrix = self.distance_matrix.rename(index={idx: string.ascii_uppercase[idx]})
+                self.distance_matrix = self.distance_matrix.rename(index={idx: next(alph_gen)})
             else:
                 self.distance_matrix = self.distance_matrix.rename(index={idx: headers[idx]})
     
@@ -55,7 +60,16 @@ class Graph:
     def __str__(self):
         graph = self.distance_matrix
         str =f"Grafo con Matriz de distancias {graph.shape})\n"
-        str += self.distance_matrix.to_string()
+        if self.distance_matrix.shape[0] > 10:
+            
+            str+=f"Indices: {self.distance_matrix.index}\n"
+            str+=f"Columnas: {self.distance_matrix.columns}\n"
+            str+="Mostrando primeras 20 columnas y 10 filas\n"
+            subset_columns = self.distance_matrix.iloc[:, :20]
+            subset = subset_columns.head(10)
+            str += subset.to_string()
+        else:
+            str += self.distance_matrix.to_string()
         return str
             
 
