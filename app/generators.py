@@ -1,5 +1,5 @@
 import string
-
+import constants 
 import numpy as np
 def alphabetic_generator(alphabet=string.ascii_uppercase):
     assert len(alphabet) == len(set(alphabet))  # make sure every letter is unique
@@ -16,6 +16,6 @@ def alphabetic_generator(alphabet=string.ascii_uppercase):
             s = [alphabet[0]] * (l+1)
 
 def generate_random_square_matrix(size=10):    
-    distance_matrix = np.random.randint(0, 1000, size=(size, size))
+    distance_matrix = np.random.randint(0, constants.RANDOM_CAP, size=(size, size))
     np.fill_diagonal(distance_matrix, 0)
     return distance_matrix

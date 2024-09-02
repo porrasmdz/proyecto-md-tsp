@@ -1,6 +1,6 @@
 from graph import Graph
 from utils import print_travelling_route
-from solvers import NearestNeighborSolver, BruteForceSolver
+from solvers import DynamicProgrammingSolver, BruteForceSolver
 from generators import generate_random_square_matrix
 import constants
 
@@ -16,7 +16,7 @@ cities = [
     "BLA", "PAY", "PLO", "MCR", "SNT", "RFT", "CMD", "PLL", "SLU", "SUC", 
     "CTC", "SVT", "PAL", "CMA", "PVM", "ECH", "BBA", "BCY", "SUC"
 ]
-matrix_size = len(cities) # 200, 400, 10000
+matrix_size = 10#len(cities) # 200, 400, 10000
 distance_matrix = generate_random_square_matrix(size=matrix_size)
 graph = Graph(distance_matrix)#, headers=cities)
   
@@ -24,7 +24,7 @@ if __name__ == "__main__":
     is_open_route = constants.RTRN_OPEN_CYCLE  
     print(f"Resolviendo problema del viajero para:\n{graph}\n\n")
     brute_force_results = BruteForceSolver(graph=graph,open_cycle=is_open_route)
-    nearest_neighbor = NearestNeighborSolver(graph=graph,open_cycle=is_open_route)
+    nearest_neighbor = DynamicProgrammingSolver(graph=graph,open_cycle=is_open_route)
     print("################################")
     if brute_force_results is not None:
        print_travelling_route(algorithm=brute_force_results, open_cycle=is_open_route)

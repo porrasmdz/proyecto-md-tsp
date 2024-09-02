@@ -1,5 +1,5 @@
 
-import string
+import constants
 import numpy as np
 import pandas as pd
 from numpy import ndarray
@@ -62,11 +62,11 @@ class Graph:
         str =f"Grafo con Matriz de distancias {graph.shape})\n"
         if self.distance_matrix.shape[0] > 10:
             
-            str+=f"Indices: {self.distance_matrix.index}\n"
-            str+=f"Columnas: {self.distance_matrix.columns}\n"
-            str+="Mostrando primeras 20 columnas y 10 filas\n"
-            subset_columns = self.distance_matrix.iloc[:, :20]
-            subset = subset_columns.head(10)
+            # str+=f"Indices: {self.distance_matrix.index}\n"
+            # str+=f"Columnas: {self.distance_matrix.columns}\n"
+            str+=f"Mostrando primeras {constants.DEFAULT_SHOW_COLS} columnas y {constants.DEFAULT_SHOW_ROWS} filas\n"
+            subset_columns = self.distance_matrix.iloc[:, :constants.DEFAULT_SHOW_COLS]
+            subset = subset_columns.head(constants.DEFAULT_SHOW_ROWS)
             str += subset.to_string()
         else:
             str += self.distance_matrix.to_string()

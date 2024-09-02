@@ -9,11 +9,14 @@ def print_travelling_route(algorithm: TSPSolver, open_cycle = False):
         (permutations, distance) = algorithm.timedFindRoute()
     except:
         print(f"Método: {algorithm.name}")
+        print(f"Complejidad algoritmica: {algorithm.algorithmic_complexity}")
         print(f"Tiempo total de ejecución: {algorithm.last_execution_time:.6f}s")
         print("No se puedo completar el algoritmo")
+        print(algorithm.last_execution_msg)
         return    
     
     print(f"Método: {algorithm.name}")
+    print(f"Complejidad algoritmica: {algorithm.algorithmic_complexity}")
     print(f"Tiempo total de ejecución: {algorithm.last_execution_time:.6f}s")
     print(f"Recorrido total: {distance} unidades")
     for perm_idx in range(len(permutations)):
