@@ -4,12 +4,12 @@ from solvers import BnBSolver, DynamicProgrammingSolver, BruteForceSolver
 import constants
 
 cities = list({
-    "GYE", "UIO", "CUE", "SDO"})#, "DUR", "MCH", "MTA", "PTV", "LOJ", "QVD",}) 
+    "GYE", "UIO", "CUE", "SDO", "DUR", "MCH", "MTA", "PTV", "LOJ", "QVD",}) 
 
 graph = Graph(cities=cities, random_values=False) 
 # graph = Graph(cities=cities)
-# graph = Graph(size=10, random_values=False) #<-Para q se repita siempre
-g_drawing = None#graph.show_graph() #<- Funcion para ver el grafo
+# graph = Graph(size=100, random_values=False) #<-Para q se repita siempre
+g_drawing = graph.show_graph() #<- Funcion para ver el grafo
 
 if __name__ == "__main__":
     is_open_route = constants.RTRN_OPEN_CYCLE  

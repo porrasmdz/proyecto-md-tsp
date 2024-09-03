@@ -68,7 +68,7 @@ class TSPSolver(ABC):
         
         nx.draw(self.g_drawing, pos, with_labels=True, node_color='lightblue', node_size=600, font_size=10, font_weight='bold', edge_color='gray')
         # nx.draw_networkx_edge_labels(self.g_drawing, pos, edge_labels=None)
-        print(optimal_path_edges)
+        # print(optimal_path_edges)
         optimal_cities = [(cities[x],cities[y]) for x,y in optimal_path_edges]
         for src, tgt in optimal_cities:
             w = df.loc[src,tgt]
@@ -76,7 +76,7 @@ class TSPSolver(ABC):
         weights = nx.get_edge_attributes(G, 'weight')
         
         # optimal_cities + [cities[len(cities)-1], cities[0]]
-        print(optimal_cities)
+        # print(optimal_cities)
         # Resalta el camino óptimo
         nx.draw_networkx_edges(self.g_drawing, pos, edgelist=optimal_cities, edge_color='red', width=2)
         nx.draw_networkx_edge_labels(G, pos, edge_labels=weights)

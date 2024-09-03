@@ -13,7 +13,7 @@ def print_travelling_route(algorithm: TSPSolver, open_cycle = False):
         print(f"Complejidad algoritmica: {algorithm.algorithmic_complexity}")
         print(f"Tiempo total de ejecución: {algorithm.last_execution_time:.6f}s")
         print("No se puedo completar el algoritmo")
-        raise e
+    
         print(algorithm.last_execution_msg)
         return    
     
