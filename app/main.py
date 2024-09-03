@@ -9,7 +9,7 @@ cities = list({
 graph = Graph(cities=cities, random_values=False) 
 # graph = Graph(cities=cities)
 # graph = Graph(size=100, random_values=False) #<-Para q se repita siempre
-g_drawing = graph.show_graph() #<- Funcion para ver el grafo
+g_drawing = None #graph.show_graph() #<- Funcion para ver el grafo #None para no verlo
 
 if __name__ == "__main__":
     is_open_route = constants.RTRN_OPEN_CYCLE  
@@ -17,6 +17,12 @@ if __name__ == "__main__":
     brute_force_results = BruteForceSolver(graph=graph,open_cycle=is_open_route, g_drawing=g_drawing)
     dynamic_prog_solver = DynamicProgrammingSolver(graph=graph,open_cycle=is_open_route, g_drawing=g_drawing)
     bnb_solver = BnBSolver(graph=graph,open_cycle=is_open_route,g_drawing=g_drawing)
+    print("################################")
+    print_travelling_route(algorithm=brute_force_results, open_cycle=is_open_route)
+    print("################################")
+    print_travelling_route(algorithm=brute_force_results, open_cycle=is_open_route)
+    print("################################")
+    print_travelling_route(algorithm=brute_force_results, open_cycle=is_open_route)
     print("################################")
     print_travelling_route(algorithm=brute_force_results, open_cycle=is_open_route)
     print("################################")

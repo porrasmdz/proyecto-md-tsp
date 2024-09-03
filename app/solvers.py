@@ -56,7 +56,7 @@ class TSPSolver(ABC):
     
     def visualize_optimal_path(self, optimal_path):
         if self.g_drawing is None:
-            print("Grafo no encontrado.")
+            print("Dibujo no encontrado.")
             return
         df = self.graph.distance_matrix
         cities = self.graph.cities
