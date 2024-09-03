@@ -6,7 +6,7 @@ from decimal import Decimal
 import time
 import numpy as np
 from python_tsp.exact import solve_tsp_dynamic_programming, solve_tsp_brute_force, solve_tsp_branch_and_bound
-from python_tsp.heuristics import solve_tsp_simulated_annealing, solve_tsp_local_search, solve_tsp_record_to_record
+from python_tsp.heuristics import solve_tsp_simulated_annealing, solve_tsp_local_search, solve_tsp_record_to_record, solve_tsp_lin_kernighan
 from stopit import ThreadingTimeout
 import math
 from graph import Graph
@@ -121,3 +121,48 @@ class BnBSolver(TSPSolver):
         return (permutation, distance)
     
 #ALGORITMOS CON HEURISTICA (NO SIEMPRE EXACTOS NI SIEMPRE OPTIMOS)
+
+class SimulatedAnnealingSolver(TSPSolver):    
+    def __init__(self, graph: Graph, open_cycle=False, timeout=10, g_drawing=None):
+        super().__init__(graph, open_cycle, timeout, g_drawing)
+        
+        size = graph.distance_matrix.shape[0]
+        self.name = "Algoritmo de Recorrido Simulado"
+        self.algorithmic_complexity = f"O(n^2 * m)"
+        self.iteration_err_msg =  f"El algoritmo necesitaría iterar: {size}^2 veces dependiendo del número de iteraciones."
+    def findRoute(self):
+        permutation, distance = solve_tsp_simulated_annealing(self.graph.get_distance_matrix())
+        return (permutation, distance)
+    
+class LocalSearchSolver(TSPSolver):    
+    def __init__(self, graph: Graph, open_cycle=False, timeout=10, g_drawing=None):
+        super().__init__(graph, open_cycle, timeout, g_drawing)
+        self.name = "Algoritmo de Búsqueda Local"
+        self.algorithmic_complexity = "O(n^2)"
+        size = graph.distance_matrix.shape[0]
+        self.iteration_err_msg = f"El algoritmo necesitaría iterar: {size}^2 veces."
+    def findRoute(self):
+        permutation, distance = solve_tsp_local_search(self.graph.get_distance_matrix())
+        return (permutation, distance)
+    
+class RecordToRecordSolver(TSPSolver):    
+    def __init__(self, graph: Graph, open_cycle=False, timeout=10, g_drawing=None):
+        super().__init__(graph, open_cycle, timeout, g_drawing)
+        self.name = "Algoritmo de Registro a Registro"
+        self.algorithmic_complexity = "O(n^2)"
+        size = graph.distance_matrix.shape[0]
+        self.iteration_err_msg = f"El algoritmo necesitaría iterar: {size}^2 veces."
+    def findRoute(self):
+        permutation, distance = solve_tsp_record_to_record(self.graph.get_distance_matrix())
+        return (permutation, distance)
+    
+class LinKernSolver(TSPSolver):    
+    def __init__(self, graph: Graph, open_cycle=False, timeout=10, g_drawing=None):
+        super().__init__(graph, open_cycle, timeout, g_drawing)
+        self.name = "Algoritmo de Lin-Kernighan"
+        self.algorithmic_complexity = "O(n^3)"
+        size = graph.distance_matrix.shape[0]
+        self.iteration_err_msg = f"El algoritmo podría necesitar iterar aproximadamente: {size}^3 veces"
+    def findRoute(self):
+        permutation, distance = solve_tsp_lin_kernighan(self.graph.get_distance_matrix())
+        return (permutation, distance)
