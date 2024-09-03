@@ -1,6 +1,10 @@
+
+import networkx as nx
+import matplotlib.pyplot as plt
 from abc import ABC, abstractmethod
 from decimal import Decimal
 import time
+import numpy as np
 from python_tsp.exact import solve_tsp_dynamic_programming, solve_tsp_brute_force, solve_tsp_branch_and_bound
 from python_tsp.heuristics import solve_tsp_simulated_annealing, solve_tsp_local_search, solve_tsp_record_to_record
 from stopit import ThreadingTimeout
@@ -12,7 +16,7 @@ class TimeoutException(Exception):
     pass
 
 class TSPSolver(ABC):
-    def __init__(self, graph: Graph,open_cycle= False, timeout=10):
+    def __init__(self, graph: Graph,open_cycle= False, timeout=10, g_drawing=None):
         self.graph = graph
         self.timeout = timeout #En segundos
         self.algorithmic_complexity ="UNDEFINED COMPLEXITY"
@@ -20,6 +24,7 @@ class TSPSolver(ABC):
         self.iteration_err_msg ="Algorithmic complexity undefined"
         if open_cycle:
             self.graph.distance_matrix.to_numpy()[:,0] = 0
+        self.g_drawing = g_drawing if g_drawing is not None else None
         self.last_execution_time = 0  
         self.last_execution_msg="Not executed"
     @abstractmethod
@@ -46,15 +51,45 @@ class TSPSolver(ABC):
         end_time = time.time()
         execution_time = end_time - start_time
         self.last_execution_time = execution_time
-            
+        self.visualize_optimal_path(optimal_path=result)
         return result
     
+    def visualize_optimal_path(self, optimal_path):
+        if self.g_drawing is None:
+            print("Grafo no encontrado.")
+            return
+        df = self.graph.distance_matrix
+        cities = self.graph.cities
+        G = nx.Graph()
+        optimal_path = optimal_path[0]
+        optimal_path_edges = list(zip(optimal_path, optimal_path[1:])) + [(optimal_path[-1], optimal_path[0])]
+    
+        pos = nx.spring_layout(self.g_drawing)  # Usa el layout del grafo ya existente
+        
+        nx.draw(self.g_drawing, pos, with_labels=True, node_color='lightblue', node_size=600, font_size=10, font_weight='bold', edge_color='gray')
+        # nx.draw_networkx_edge_labels(self.g_drawing, pos, edge_labels=None)
+        print(optimal_path_edges)
+        optimal_cities = [(cities[x],cities[y]) for x,y in optimal_path_edges]
+        for src, tgt in optimal_cities:
+            w = df.loc[src,tgt]
+            G.add_edge(src,tgt, weight=w)
+        weights = nx.get_edge_attributes(G, 'weight')
+        
+        # optimal_cities + [cities[len(cities)-1], cities[0]]
+        print(optimal_cities)
+        # Resalta el camino óptimo
+        nx.draw_networkx_edges(self.g_drawing, pos, edgelist=optimal_cities, edge_color='red', width=2)
+        nx.draw_networkx_edge_labels(G, pos, edge_labels=weights)
+        # nx.draw_networkx_nodes(self.g_drawing, pos, nodelist=optimal_path, node_color='lightgreen', node_size=500)
+        
+        plt.show()
+        
 
 #ALGORITMOS EXACTOS
 
 class BruteForceSolver(TSPSolver):
-    def __init__(self, graph: Graph, open_cycle=False):
-        super().__init__(graph, open_cycle)
+    def __init__(self, graph: Graph, open_cycle=False, timeout=10, g_drawing=None):
+        super().__init__(graph, open_cycle, timeout, g_drawing)
         self.name = "Algoritmo de Fuerza Bruta"
         self.algorithmic_complexity = "O(n!)"
         size = graph.distance_matrix.shape[0]
@@ -64,8 +99,8 @@ class BruteForceSolver(TSPSolver):
         return (permutation, distance)
     
 class DynamicProgrammingSolver(TSPSolver):    
-    def __init__(self, graph: Graph, open_cycle=False):
-        super().__init__(graph, open_cycle)
+    def __init__(self, graph: Graph, open_cycle=False, timeout=10, g_drawing=None):
+        super().__init__(graph, open_cycle, timeout, g_drawing)
         self.name = "Algoritmo de Programación Dinámica"
         self.algorithmic_complexity = "O(n^2 * 2^n)"
         size = graph.distance_matrix.shape[0]
@@ -75,8 +110,8 @@ class DynamicProgrammingSolver(TSPSolver):
         return (permutation, distance)
     
 class BnBSolver(TSPSolver):    
-    def __init__(self, graph: Graph, open_cycle=False):
-        super().__init__(graph, open_cycle)
+    def __init__(self, graph: Graph, open_cycle=False, timeout=10, g_drawing=None):
+        super().__init__(graph, open_cycle, timeout, g_drawing)
         self.name = "Algoritmo de Ramificación y Acotamiento"
         self.algorithmic_complexity = "O(n!)"
         size = graph.distance_matrix.shape[0]

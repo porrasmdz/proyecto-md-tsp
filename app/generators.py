@@ -18,6 +18,6 @@ def alphabetic_generator(alphabet=string.ascii_uppercase):
 def generate_random_square_matrix(size=10, seed=None):    
     if seed is not None:
         np.random.seed(seed)
-    distance_matrix = np.random.randint(0, constants.MAX_EDGES_VALUES, size=(size, size))
+    distance_matrix = np.random.randint(1, constants.MAX_EDGES_VALUES, size=(size, size))
     np.fill_diagonal(distance_matrix, 0)
     return distance_matrix

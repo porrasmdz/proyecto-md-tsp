@@ -1,8 +1,6 @@
 
 import constants
-import numpy as np
 import pandas as pd
-from numpy import ndarray
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -68,10 +66,11 @@ class Graph:
         pos = nx.spring_layout(G)  # Layout para la disposición de los nodos
         weights = nx.get_edge_attributes(G, 'weight')
 
-        nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=600, font_size=10, font_weight='bold', edge_color='gray')
+        nx.draw(G, pos, with_labels=True, node_color='lightblue', font_size=10, font_weight='bold', edge_color='gray')
         nx.draw_networkx_edge_labels(G, pos, edge_labels=weights)
 
         plt.show()
+        return G
 
 
     
